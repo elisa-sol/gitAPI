@@ -1,7 +1,4 @@
-# CPS - Ремонт техники
 
----
-<img width="1162" alt="image" src="https://github.com/Binatik/images/assets/47430210/f1b24cdb-f226-42e3-8c7b-e8b3539968aa">
 
 ## Проверить
 
