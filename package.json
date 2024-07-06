@@ -1,7 +1,7 @@
 {
-  "name": "cps",
+  "name": "API GitHub",
   "version": "1.0.0",
-  "description": "Ремонт техники",
+  "description": "Autocomplete",
   "main": "index.js",
   "scripts": {
     "dev": "npx webpack serve --mode development",
