@@ -1,4 +1,5 @@
-// import ''
+import '../scss/style.scss'
+
 class View {
     constructor() {
         this.app = document.querySelector('.app');
@@ -11,6 +12,10 @@ class View {
         this.searchCounter = this.createElement('span', 'counter');
         this.searchLine.append(this.searchInput);
         this.searchLine.append(this.searchCounter);
+
+
+        this.dropdown = this.createElement('div', 'dropdown');
+        this.searchLine.append(this.dropdown);
 
 
         this.usersWrapper = this.createElement('div', 'usersWrapper');
@@ -36,12 +41,28 @@ class View {
         }
     }
 
-    createUser(userData) {
-        const userElement = this.createElement('li', 'userPrev');
-        userElement.innerHTML = `<span class = "userPrevName">${userData.login}</span>`;
-        this.usersList.append(userElement);
+
+    createDropdownItem(repoData) {
+        const repoElement = this.createElement('div', 'dropdown-item');
+        repoElement.addEventListener('click', this.showUserData());
+        const repoName = repoData.full_name.split('/')[1];
+        repoElement.textContent = repoName;
+        repoElement.addEventListener('click', () => {
+            this.searchInput.value = repoName
+            this.clearDropdown();
+        });
+        this.dropdown.append(repoElement);
+    }
+
+    showUserData() {
+
+    }
+
+    clearDropdown() {
+        this.dropdown.innerHTML = '';
     }
 }
+
 
 
 
@@ -49,61 +70,31 @@ const userPerPage = 5;
 
 class Search {
 
-    setCurrentPage(pageNumber) {
-        this.currentPage = pageNumber;
-    }
-
     constructor(view) {
         this.view = view;
-
-        // this.view.searchInput.addEventListener('keyup', this.loadUsers.bind(this));
-        this.view.searchInput.addEventListener('keyup', this.debounce(this.loadUsers.bind(this), 500));
-        // this.view.loadMore.addEventListener('click', this.loadUsers.bind(this));
-        this.currentPage = 1;
+        // this.currentPage = 1;
+        this.view.searchInput.addEventListener('keyup', this.debounce(this.loadRepositories.bind(this), 400));
 
     }
 
-    // async searchUsers() {
-    //     return await fetch(`http://api.github.com/search/users?q=${this.view.searchInput.value}&per_page=${userPerPage}&page=`)
-    //         .then((res) => {
-    //             if (res.ok) {
-    //                 res.json().then(res => {
-    //                     res.items.forEach(user => this.view.createUser(user));
-    //                 });
-    //             } else {
-    //                 // console.log('Error fetching users');
-    //             }
-    //         })
-    //         .catch(error => {
-    //             // console.log('Fetch error: ', error);
-    //         });
-    // }
-
-   async loadUsers() {
+    async loadRepositories() {
         const searchValue = this.view.searchInput.value;
         if (searchValue) {
-            return await fetch(`http://api.github.com/search/users?q=${this.view.searchInput.value}&per_page=${userPerPage}&page=${this.currentPage}`)
-                .then((res) => {
-                    if (res.ok) {
-                        this.setCurrentPage(this.currentPage + 1);
-                        res.json().then(res => {
-                            res.items.forEach(user => this.view.createUser(user));
-                        });
-                    } else {
-                        // console.log('Error fetching users');
-                    }
-                })
-                .catch(error => {
-                    // console.log('Fetch error: ', error);
-                });
+            this.view.clearDropdown();
+            try {
+                const res = await fetch(`https://api.github.com/search/repositories?q=${searchValue}&per_page=${userPerPage}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    data.items.forEach(repo => this.view.createDropdownItem(repo));
+                }
+            } catch (error) {
+                console.error('Error fetching repositories:', error);
+            }
         } else {
-            this.clearUsers();
+            this.view.clearDropdown();
         }
-   }
+    }
 
-   clearUsers() {
-        this.view.usersList.innerHTML = '';
-   }
 
    debounce = (fn, debounceTime) => {
       let timeout;
@@ -119,5 +110,66 @@ class Search {
 }
 
 new Search(new View);
+
+
+
+// async searchUsers() {
+//     return await fetch(`http://api.github.com/search/users?q=${this.view.searchInput.value}&per_page=${userPerPage}&page=`)
+//         .then((res) => {
+//             if (res.ok) {
+//                 res.json().then(res => {
+//                     res.items.forEach(user => this.view.createUser(user));
+//                 });
+//             } else {
+//                 // console.log('Error fetching users');
+//             }
+//         })
+//         .catch(error => {
+//             // console.log('Fetch error: ', error);
+//         });
+// }
+
+// async loadUsers() {
+//      const searchValue = this.view.searchInput.value;
+//      if (searchValue) {
+//          this.currentPage = 1;
+//          this.clearUsers();
+//          try {
+//              const res = await fetch(`https://api.github.com/search/users?q=${this.view.searchInput.value}&per_page=${userPerPage}&page=${this.currentPage}`)
+//              if (res.ok) {
+//                  const data = await res.json();
+//                  this.currentPage += 1;
+//                  data.items.forEach(user => this.view.createUser(user));
+//
+//              } else {
+//
+//              }
+//
+//          } catch(error) {
+//
+//          }
+//
+//      } else {
+//          this.clearUsers();
+//      }
+// }
+
+// clearUsers() {
+//      this.view.usersList.innerHTML = '';
+// }
+
+
+
+// this.view.searchInput.addEventListener('keyup', this.debounce(this.loadUsers.bind(this), 500));
+// this.view.loadMore.addEventListener('click', this.loadUsers.bind(this));
+// this.view.searchInput.addEventListener('keyup', this.loadUsers.bind(this));
+
+
+
+// createUser(userData) {
+//     const userElement = this.createElement('li', 'userPrev');
+//     userElement.innerHTML = `<span class = "userPrevName">${userData.login}</span>`;
+//     this.usersList.append(userElement);
+// }
 
 
