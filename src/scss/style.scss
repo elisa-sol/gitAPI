@@ -1,9 +1,7 @@
-//@import '';
-
 
 .app {
   width: 300px;
-  margin: 50px auto;
+  margin: auto;
 }
 
 .searchLine {
@@ -36,4 +34,40 @@
 
 .dropdown-item:hover {
   background-color: #f0f0f0;
+}
+
+.usersWrapper,
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+ul {
+  padding: 0;
+}
+
+.usersList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.deleteButton {
+  display: flex;
+}
+
+.repo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: #cccccc;
+  padding: 10px;
+  border-radius: 5px;
 }
