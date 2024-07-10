@@ -40,23 +40,49 @@ var View = /*#__PURE__*/function () {
       var element = document.createElement(elementTag);
       if (elementClass) {
         element.classList.add(elementClass);
-        return element;
       }
+      return element;
+    }
+  }, {
+    key: "createRepositoryItem",
+    value: function createRepositoryItem(repoData) {
+      var repoElement = this.createElement('p', 'repo-item');
+      repoElement.innerHTML = "Name: ".concat(repoData.full_name.split('/')[0], "<br>\n        Owner: ").concat(repoData.name, "<br>\n        Stars: ").concat(repoData.stargazers_count);
+      var deleteButton = this.createElement('button', 'deleteButton');
+      deleteButton.textContent = 'Удалить';
+      deleteButton.addEventListener('click', function () {
+        repoElement.remove();
+      });
+      repoElement.append(deleteButton);
+      this.usersList.append(repoElement);
+      this.searchInput.value = '';
     }
   }, {
     key: "createDropdownItem",
     value: function createDropdownItem(repoData) {
       var _this = this;
       var repoElement = this.createElement('div', 'dropdown-item');
-      repoElement.addEventListener('click', this.showUserData());
-      var repoName = repoData.full_name.split('/')[1];
-      repoElement.textContent = repoName;
       repoElement.addEventListener('click', function () {
-        _this.searchInput.value = repoName;
+        _this.searchInput.value = repoData.full_name.split('/')[1];
+        _this.createRepositoryItem(repoData);
         _this.clearDropdown();
       });
+      var repoName = repoData.full_name.split('/')[1];
+      repoElement.textContent = repoName;
       this.dropdown.append(repoElement);
     }
+
+    // createDropdownItem(repoData) {
+    //     const repoElement = this.createElement('div', 'dropdown-item');
+    //     repoElement.addEventListener('click', this.showUserData());
+    //     const repoName = repoData.full_name.split('/')[1];
+    //     repoElement.textContent = repoName;
+    //     repoElement.addEventListener('click', () => {
+    //         this.searchInput.value = repoName
+    //         this.clearDropdown();
+    //     });
+    //     this.dropdown.append(repoElement);
+    // }
   }, {
     key: "showUserData",
     value: function showUserData() {}
