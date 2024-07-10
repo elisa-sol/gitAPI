@@ -37,22 +37,50 @@ class View {
         const element = document.createElement(elementTag);
         if (elementClass) {
             element.classList.add(elementClass);
-            return element;
         }
+        return element;
+    }
+
+    createRepositoryItem(repoData) {
+        const repoElement = this.createElement('p', 'repo-item');
+        repoElement.innerHTML = `Name: ${repoData.full_name.split('/')[0]}<br>
+        Owner: ${repoData.name}<br>
+        Stars: ${repoData.stargazers_count}`;
+        const deleteButton = this.createElement('button', 'deleteButton');
+        deleteButton.textContent = 'Удалить';
+        deleteButton.addEventListener('click', () => {
+            repoElement.remove();
+        });
+        repoElement.append(deleteButton);
+        this.usersList.append(repoElement);
+        this.searchInput.value = '';
     }
 
 
     createDropdownItem(repoData) {
         const repoElement = this.createElement('div', 'dropdown-item');
-        repoElement.addEventListener('click', this.showUserData());
-        const repoName = repoData.full_name.split('/')[1];
-        repoElement.textContent = repoName;
         repoElement.addEventListener('click', () => {
-            this.searchInput.value = repoName
+            this.searchInput.value = repoData.full_name.split('/')[1];
+            this.createRepositoryItem(repoData);
             this.clearDropdown();
         });
+
+        const repoName = repoData.full_name.split('/')[1];
+        repoElement.textContent = repoName;
         this.dropdown.append(repoElement);
     }
+
+    // createDropdownItem(repoData) {
+    //     const repoElement = this.createElement('div', 'dropdown-item');
+    //     repoElement.addEventListener('click', this.showUserData());
+    //     const repoName = repoData.full_name.split('/')[1];
+    //     repoElement.textContent = repoName;
+    //     repoElement.addEventListener('click', () => {
+    //         this.searchInput.value = repoName
+    //         this.clearDropdown();
+    //     });
+    //     this.dropdown.append(repoElement);
+    // }
 
     showUserData() {
 
@@ -61,6 +89,7 @@ class View {
     clearDropdown() {
         this.dropdown.innerHTML = '';
     }
+
 }
 
 
